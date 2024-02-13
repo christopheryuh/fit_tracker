@@ -5,28 +5,59 @@ import Link from 'next/link'
 
 const inter = Inter({ subsets: ["latin"] });
 
-const test_list = [];
+const rows = [];
 
-function WorkoutRows() {
+function Row({index}){
+  const [weight, setWeight] = useState("")
+ 
+  let weightplaceholder = null;
+
+  function update(val){
+    setWeight(val);
+    rows[index] = weight;
+  }
+
+  return (
+    <>
+    <input value={weight} onChange={e => update(e.target.value)}></input>
+    </>
+  )
+}
+
+function Exercise() {
   // State to hold the list of components
   const [rows, setRow] = useState([]);
 
   // Function to add a new component to the list
   const addRow = () => {
-    // Here, you can add whatever component you want to add to the list
-    const newRow = <p key={rows.length}>New Component</p>;
-    test_list.push(rows.lengths)
+    const newRow = <div><Row index={rows.length}></Row><br></br></div>;
     setRow([...rows, newRow]);
   };
-
   return (
     <div>
-      <h2>Component List</h2>
       {/* Render the list of components */}
       {rows.map(row => row)}
       {/* Button to add a new component */}
-      <button onClick={addRow}>Add Row</button>
-      <p>{test_list}</p>
+      <button onClick={addRow}>Add Set</button>
+    </div>
+  );
+}
+
+function FullWorkout() {
+  // State to hold the list of components
+  const [data, update] = useState([]);
+
+  // Function to add a new component to the list
+  const addExercise = () => {
+    const newExercise = <div><Exercise></Exercise><br></br></div>;
+    update([...data, newExercise]);
+  };
+  return (
+    <div>
+      {/* Render the list of components */}
+      {data.map(row => row)}
+      {/* Button to add a new component */}
+      <button onClick={addExercise}>New Exercise</button>
     </div>
   );
 }
@@ -41,7 +72,8 @@ export default function Home() {
     <hr></hr>
     <div id="list">
     
-    <WorkoutRows></WorkoutRows>
+    <FullWorkout></FullWorkout>
+    <button onClick={() => console.log(rows)}>log</button>
 
     </div>
     </div>
