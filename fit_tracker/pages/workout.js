@@ -7,14 +7,12 @@ const inter = Inter({ subsets: ["latin"] });
 
 const rows = [];
 
-function Row({index}){
+function Set({index}){
   const [weight, setWeight] = useState("")
- 
-  let weightplaceholder = null;
 
   function update(val){
     setWeight(val);
-    rows[index] = weight;
+    rows[index] = val;
   }
 
   return (
@@ -24,40 +22,38 @@ function Row({index}){
   )
 }
 
-function Exercise() {
-  // State to hold the list of components
-  const [rows, setRow] = useState([]);
+function Exercise({name}) {
+  const [sets, setSets] = useState([]);
 
   // Function to add a new component to the list
   const addRow = () => {
-    const newRow = <div><Row index={rows.length}></Row><br></br></div>;
-    setRow([...rows, newRow]);
+    const newSet = <div><Set index={rows.length}></Set><br></br></div>;
+    rows.push(null)
+    setSets([...sets, newSet]);
   };
   return (
-    <div>
-      {/* Render the list of components */}
-      {rows.map(row => row)}
-      {/* Button to add a new component */}
+    <>
+      <h2>{name}</h2>
+      {sets.map(set => set)}
       <button onClick={addRow}>Add Set</button>
-    </div>
+    </>
   );
 }
 
 function FullWorkout() {
   // State to hold the list of components
-  const [data, update] = useState([]);
+  const [data, updateData] = useState([]);
+  const [exercise, setExercise] = useState("");
 
   // Function to add a new component to the list
-  const addExercise = () => {
-    const newExercise = <div><Exercise></Exercise><br></br></div>;
-    update([...data, newExercise]);
+  function addExercise(exercise){
+    const newExercise = <div><Exercise name={exercise}></Exercise><br></br></div>;
+    updateData([...data, newExercise]);
   };
   return (
     <div>
-      {/* Render the list of components */}
       {data.map(row => row)}
-      {/* Button to add a new component */}
-      <button onClick={addExercise}>New Exercise</button>
+      <button onClick={() => addExercise(exercise)}>Add Exercise</button><input value={exercise} onChange={e => setExercise(e.target.value)}></input>
     </div>
   );
 }
