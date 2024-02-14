@@ -7,17 +7,20 @@ const inter = Inter({ subsets: ["latin"] });
 
 const rows = [];
 
-function Set({index}){
+function Set({index,name}){
+  const [reps, setReps] = useState("")
   const [weight, setWeight] = useState("")
 
-  function update(val){
-    setWeight(val);
-    rows[index] = val;
+  function update(weight,reps){
+    setWeight(weight)
+    setReps(reps);
+    rows[index] = {'name':name,'weight':weight,'reps':reps}
   }
 
   return (
     <>
-    <input value={weight} onChange={e => update(e.target.value)}></input>
+    <input value={reps} onChange={e => update(weight,e.target.value)} placeholder="reps"></input>
+    <input value={weight} onChange={e => update(e.target.value,reps)} placeholder="weight"></input>
     </>
   )
 }
@@ -27,7 +30,7 @@ function Exercise({name}) {
 
   // Function to add a new component to the list
   const addRow = () => {
-    const newSet = <div><Set index={rows.length}></Set><br></br></div>;
+    const newSet = <div><Set name={name} index={rows.length}></Set><br></br></div>;
     rows.push(null)
     setSets([...sets, newSet]);
   };
