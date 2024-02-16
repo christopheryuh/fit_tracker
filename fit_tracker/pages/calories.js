@@ -9,7 +9,6 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   return (
     <div>
-
     <h1>Calories</h1>
     <Link href="/">home</Link>
     </div>
