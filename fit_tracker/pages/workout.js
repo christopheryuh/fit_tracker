@@ -1,7 +1,14 @@
 import styles from "@/styles/Home.module.css";
 import { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Ubuntu } from 'next/font/google'
+import { useRouter } from 'next/router';
 import Link from 'next/link'
+import { createClient } from '@supabase/supabase-js'
+
+const url = "https://icvxrwuyoricxsaevqrk.supabase.co"
+const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imljdnhyd3V5b3JpY3hzYWV2cXJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDg1MjMyMzcsImV4cCI6MjAyNDA5OTIzN30.0CE9XmvK1d5qdkCbS8z5JcAYRFHVCFqdqnmKGWowUQM"
+const supabase = createClient(url, key)
 
 const font1 = Ubuntu({
   subsets: ['latin'],
@@ -9,7 +16,7 @@ const font1 = Ubuntu({
   weight: '500'
 })
 const inlineStyles = {
-  input: {
+  input: {  
     padding: '0.1rem .5rem',
     margin: '0.5rem',
     border: '1px solid #ccc',
@@ -44,7 +51,7 @@ function Set({index,name}){
   function update(weight,reps){
     setWeight(weight)
     setReps(reps);
-    rows[index] = {'name':name,'weight':weight,'reps':reps}
+    rows[index] = {'name':name,'weight':Math.floor(weight),'reps':Math.floor(reps)}
   }
 
   return (
@@ -55,8 +62,9 @@ function Set({index,name}){
   )
 }
 
-function Exercise({name}) {
+function Exercise({name, id}) {
   const [sets, setSets] = useState([<div><Set name={name} index={rows.length}></Set><br></br></div>]);
+  const [prtext, setPrText] = useState("")
 
   // Function to add a new component to the list
   const addRow = () => {
@@ -64,26 +72,46 @@ function Exercise({name}) {
     rows.push(null)
     setSets([...sets, newSet]);
   };
+  useEffect(() => {
+    async function load(){
+      const {data,error} = await supabase.from("prs").select("*").eq("id",id).eq("exercise",name)
+      return data
+    }
+    async function fetch_data(){
+    let d = await load()
+    if (d.length > 0){
+      setPrText("Record is "+d[0].weight+" for "+ d[0].reps + " reps")
+    }
+
+  }
+    fetch_data();
+
+
+},[])
   return (
     <>
-      <h2 className={font1.className} style={styles.h2}>{name}</h2>
+      <h2 className={font1.className} style={styles.h2}>{name}</h2><p>{prtext}</p>
       {sets.map(set => set)}
       <button style={inlineStyles.button} onClick={addRow}>Add Set</button>
     </>
   );
 }
 
-function FullWorkout() {
+function FullWorkout({id}) {
   // State to hold the list of components
   const [data, updateData] = useState([]);
   const [exercise, setExercise] = useState("");
 
   // Function to add a new component to the list
   function addExercise(exercise){
-    const newExercise = <div><Exercise name={exercise}></Exercise><br></br></div>;
+    if (exercise != ""){
+    const newExercise = <div><Exercise name={exercise} id={id}></Exercise><br></br></div>;//thinking error is here
     setExercise("")
     updateData([...data, newExercise]);
-
+    }
+    else {
+      alert("Exercise Must Have A Name")
+    }
   };
   return (
     <div>
@@ -93,9 +121,27 @@ function FullWorkout() {
   );
 }
 
+async function submit(rows,id){
+  let prs = 0
+  for (let i = 0; i < rows.length; i++){
+      const {data, error} = await supabase.from("prs").select("*").eq("id",id).eq("exercise",rows[i].name)
+      console.log(data)
+      if (data.length > 0){
+        if (rows[i].weight > data[0].weight){
+          const {error} = await supabase.from("prs").update({"weight":rows[i].weight,"reps":rows[i].reps}).eq("id",id).eq("exercise",rows[i].name)
+        }
+      }
+      else {
+        const {error} = await supabase.from("prs").insert({"unique":id+rows[i].name,"id":id,"exercise":rows[i].name,"weight":rows[i].weight,"reps":rows[i].reps})
+      }
+  }
+}
 
 
 export default function Home() {
+  const router = useRouter();
+  const id = router.query.id;
+
   return (
     <div>
     <h1 className={font1.className} style={styles.h2}>Workout</h1>
@@ -103,8 +149,8 @@ export default function Home() {
     <hr></hr>
     <div id="list">
     
-    <FullWorkout></FullWorkout>
-    <button style={inlineStyles.button} onClick={() => console.log(rows)}>log</button>
+    <FullWorkout id={id}></FullWorkout>
+    <button style={inlineStyles.button} onClick={()=>submit(rows,id)}>Finish Workout</button>
 
     </div>
     </div>
