@@ -38,7 +38,6 @@ export default function Home(){
     const [input_calories, setInputCalories] = useState(0);
     const id = router.query.id;
     useEffect(() => {
-        try{
         async function load(){
             const {data, error} = await supabase.from("wc").select("*").eq("id",id)
             return data
@@ -47,23 +46,24 @@ export default function Home(){
         async function fetch_data(){    
         let data = await load()
         let time = new Date()
+        try{
         if (data[0].last_updated != time.getDay()){
             const { error } = await supabase.from('wc').update({ calories: 0, last_updated: time.getDay()}).eq('id', id)
             data = await load()
         }
-        setCalorieData(data)
+        setCalorieData(data)}
+        catch {
         }
-        fetch_data()}
-        catch (error){
-            alert("error loading user data")
         }
-    
-    })
+        fetch_data()
 
+    }
+    
+    )  
     return (
     <div>
     <h1>Calories</h1>
-    <button onClick={()=>router.push({ pathname: "/", query: {'id':d.id}})}>Go Home</button>
+    <button onClick={()=>router.push({ pathname: "/", query: {'id':id}})}>Go Home</button>
     <hr></hr>
     <Calories calorieData={calorieData}></Calories>
     <input value={input_calories} onChange={e => setInputCalories(e.target.value)}></input><button onClick={()=>update(input_calories,calorieData[0].calories,id)}>Update</button>
