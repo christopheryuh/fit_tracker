@@ -91,8 +91,7 @@ function Exercise({name, id}) {
   return (
     <>
       <h2 className={font1.className} style={styles.h2}>{name}</h2><p>{prtext}</p>
-      {sets.map(set => set)}
-      {sets.map((item, index) => item)}
+      {sets.map((item, index) => <div key={index}>{item}</div>)}
       <button style={inlineStyles.button} onClick={addRow}>Add Set</button>
     </>
   );
@@ -116,7 +115,7 @@ function FullWorkout({id}) {
   };
   return (
     <div>
-      {data.map(row => row)}
+      {data.map((item, index) => <div key={index}>{item}</div>)}
       <button style={inlineStyles.button} onClick={() => addExercise(exercise)}>Add Exercise</button><input style={inlineStyles.input} value={exercise} onChange={e => setExercise(e.target.value)}></input>
     </div>
   );
