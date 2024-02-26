@@ -92,6 +92,7 @@ function Exercise({name, id}) {
     <>
       <h2 className={font1.className} style={styles.h2}>{name}</h2><p>{prtext}</p>
       {sets.map(set => set)}
+      {sets.map((item, index) => item)}
       <button style={inlineStyles.button} onClick={addRow}>Add Set</button>
     </>
   );
