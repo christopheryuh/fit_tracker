@@ -63,12 +63,12 @@ function Set({index,name}){
 }
 
 function Exercise({name, id}) {
-  const [sets, setSets] = useState([<div><Set name={name} index={rows.length}></Set><br></br></div>]);
+  const [sets, setSets] = useState([<div key={id}><Set name={name} index={rows.length}></Set><br></br></div>]);
   const [prtext, setPrText] = useState("")
 
   // Function to add a new component to the list
   const addRow = () => {
-    const newSet = <div><Set name={name} index={rows.length}></Set><br></br></div>;
+    const newSet = <div key={id}><Set name={name} index={rows.length}></Set><br></br></div>;
     rows.push(null)
     setSets([...sets, newSet]);
   };
@@ -114,7 +114,7 @@ function FullWorkout({id}) {
     }
   };
   return (
-    <div>
+    <div> 
       {data.map((item, index) => <div key={index}>{item}</div>)}
       <button style={inlineStyles.button} onClick={() => addExercise(exercise)}>Add Exercise</button><input style={inlineStyles.input} value={exercise} onChange={e => setExercise(e.target.value)}></input>
     </div>
