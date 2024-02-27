@@ -135,6 +135,7 @@ async function submit(rows,id){
         const {error} = await supabase.from("prs").insert({"unique":id+rows[i].name,"id":id,"exercise":rows[i].name,"weight":rows[i].weight,"reps":rows[i].reps})
       }
   }
+  alert("finished workout")
 }
 
 
@@ -145,7 +146,7 @@ export default function Home() {
   return (
     <div>
     <h1 className={font1.className} style={styles.h2}>Workout</h1>
-    <Link href="/">home</Link>
+    <button style={inlineStyles.button} onClick={()=>router.push({ pathname: "/", query: {'id':id}})}>Home</button>
     <hr></hr>
     <div id="list">
     
