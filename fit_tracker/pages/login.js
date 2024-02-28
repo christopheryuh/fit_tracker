@@ -10,12 +10,12 @@ import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
 
 
-const font1 = Ubuntu({
+const font1 = Ubuntu({//load font
   subsets: ['latin'],
   display: 'swap',
   weight: '500'
 })
-const inlineStyles = {
+const inlineStyles = {//styles
   input: {  
     padding: '0.1rem .5rem',
     margin: '0.5rem',
@@ -45,11 +45,11 @@ const inlineStyles = {
 
 const url = "https://icvxrwuyoricxsaevqrk.supabase.co"//database info
 const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imljdnhyd3V5b3JpY3hzYWV2cXJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDg1MjMyMzcsImV4cCI6MjAyNDA5OTIzN30.0CE9XmvK1d5qdkCbS8z5JcAYRFHVCFqdqnmKGWowUQM"
-const supabase = createClient(url, key)
+const supabase = createClient(url, key)//create database
 
 const inter = Inter({ subsets: ["latin"] });
 
-async function authenticate(login){//look throught the database and try to find an entry with a matching username and passwork 
+async function authenticate(login){//look throught the database and try to find an entry with a matching username and password
   //console.log({username:entered_username,password:entered_password})
   const { data, error } = await supabase.from("login").select("*").eq('username',login.username).eq('password',login.password)
   if (data.length > 0){// if it exists
@@ -61,12 +61,11 @@ async function authenticate(login){//look throught the database and try to find 
 }
 async function get_id(username){//convert username to id
   const {data, error} = await supabase.from("ids").select("*").eq("username",username)
-  console.log(data)
-  return data[0].id
+  return data[0].id//return the id that gets loaded
 }
 
 
-export default function Home() {
+export default function Home() {//full page
   const router = useRouter();
 
   let goal_calories = 1000//load from database
@@ -79,13 +78,11 @@ export default function Home() {
       password: password
 
      }
-     let auth = await authenticate(login_data)
+     let auth = await authenticate(login_data)//authenticate
      if (auth){
     let id = await get_id(username)
-    console.log("id")
-    console.log(id)
     router.push(
-      { pathname: "/", query: {'id':id}}
+      { pathname: "/", query: {'id':id}}//link to home page after you log in
     );
      }
      else{

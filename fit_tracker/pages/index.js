@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 import { createClient } from '@supabase/supabase-js'
 
-const font1 = Ubuntu({
+const font1 = Ubuntu({//font
   subsets: ['latin'],
   display: 'swap',
   weight: '500'
@@ -46,7 +46,7 @@ export default function Home() {//A Bunch of links to the different pages
   const router = useRouter();
   const d = router.query;
 
-  return (
+  return (//main page. Just a bunch of buttons that lead to the different functions
     <div>
     <h1 className={font1.className} >FIT TRACKER</h1>
     <button style={inlineStyles.button} onClick={()=>router.push({ pathname: "/calories", query: {'id':d.id}})}>Calories</button>

@@ -9,7 +9,7 @@ import Link from 'next/link'
 
 import { createClient } from '@supabase/supabase-js'
 
-const font1 = Ubuntu({
+const font1 = Ubuntu({//load font
   subsets: ['latin'],
   display: 'swap',
   weight: '500'
@@ -44,13 +44,12 @@ const inlineStyles = {//styles
 
 const url = "https://icvxrwuyoricxsaevqrk.supabase.co"
 const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imljdnhyd3V5b3JpY3hzYWV2cXJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDg1MjMyMzcsImV4cCI6MjAyNDA5OTIzN30.0CE9XmvK1d5qdkCbS8z5JcAYRFHVCFqdqnmKGWowUQM"
-const supabase = createClient(url, key)
+const supabase = createClient(url, key)//load database
 
 const inter = Inter({ subsets: ["latin"] });
 
 
-export default function Home() {
-  const router = useRouter();
+export default function Home() {//full page
 
   let goal_calories = 1000//load from database
   const [username, setUsername] = useState();//variables (needed to update UI and variable simultaneously)
@@ -60,7 +59,7 @@ export default function Home() {
   async function handleSubmit() {
 
     const { data, error } = await supabase.from("login").select("*").eq('username',username)// if there isnt a username in the database
-    if (data.length == 0){
+    if (data.length == 0){//if there is nothing in data
         const msg = await supabase.from("login").insert({'username':username,'password':password})//create one in the username and password table
         const {data, error} = await supabase.from("ids").select("*")//get how many accounts there are
         const {data2, error2} = await supabase.from("ids").insert({'username':username,'id':(data.length+1)})// add a new id to the database 

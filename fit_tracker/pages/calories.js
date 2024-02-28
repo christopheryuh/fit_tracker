@@ -50,9 +50,9 @@ const inlineStyles = {//css styles
   };
 
 function Calories({ calorieData }) {
-    return (// render the calories
+    return (// render the calorie counter
         <div>
-            {calorieData && calorieData.length > 0 && (
+            {calorieData && calorieData.length > 0 && (//if the data got loaded
                 <h2 style={inlineStyles.h2}>{calorieData[0].calories}/{calorieData[0].goal_calories}</h2>
             )}
         </div>
@@ -64,29 +64,29 @@ async function update(input_cals,cals,id){
   .eq('id', id)//add calories to the database
 }
 
-export default function Home(){
+export default function Home(){//main page component
     let router = useRouter()
     const [calorieData, setCalorieData] = useState(null);//variables (needed to update UI and variable simultaneously)
     const [input_calories, setInputCalories] = useState(0);
-    const id = router.query.id;
+    const id = router.query.id;//loaded the user id
     useEffect(() => {//load calorie data
         async function load(){
             const {data, error} = await supabase.from("wc").select("*").eq("id",id)
             return data
 
         }
-        async function fetch_data(){    
-        let data = await load()
-        let time = new Date()
-        try{
-        if (data[0].last_updated != time.getDay()){// if it's a different day, reset the calories
-            const { error } = await supabase.from('wc').update({ calories: 0, last_updated: time.getDay()}).eq('id', id)
-            data = await load()
-        }
-        setCalorieData(data)}
-        catch {
-        }
-        }
+        async function fetch_data(){//get the data, and current time
+            let data = await load()
+            let time = new Date()
+            try{
+            if (data[0].last_updated != time.getDay()){// if it's a different day, reset the calories
+                const { error } = await supabase.from('wc').update({ calories: 0, last_updated: time.getDay()}).eq('id', id)
+                data = await load()
+            }
+            setCalorieData(data)}
+            catch {
+            }
+            }
         fetch_data()
 
     }

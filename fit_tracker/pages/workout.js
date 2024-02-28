@@ -42,13 +42,13 @@ const inlineStyles = {
     margin: '1rem 0',
   },
 };
-const rows = [];
+const rows = [];//list of set data
 
 function Set({index,name}){
-  const [reps, setReps] = useState("")
+  const [reps, setReps] = useState("")//variable
   const [weight, setWeight] = useState("")
 
-  function update(weight,reps){
+  function update(weight,reps){//update the variables and the list of data
     setWeight(weight)
     setReps(reps);
     rows[index] = {'name':name,'weight':Math.floor(weight),'reps':Math.floor(reps)}
@@ -66,13 +66,13 @@ function Exercise({name, id}) {
   const [sets, setSets] = useState([<div key={id}><Set name={name} index={rows.length}></Set><br></br></div>]);
   const [prtext, setPrText] = useState("")
 
-  // Function to add a new component to the list
+  // Function to add a new set to the list
   const addRow = () => {
     const newSet = <div key={id}><Set name={name} index={rows.length}></Set><br></br></div>;
     rows.push(null)
     setSets([...sets, newSet]);
   };
-  useEffect(() => {
+  useEffect(() => {//load the records of the user when they load the exercise
     async function load(){
       const {data,error} = await supabase.from("prs").select("*").eq("id",id).eq("exercise",name)
       return data
@@ -88,10 +88,10 @@ function Exercise({name, id}) {
 
 
 },[])
-  return (
+  return (//render the exercise
     <>
       <h2 className={font1.className} style={styles.h2}>{name}</h2><p>{prtext}</p>
-      {sets.map((item, index) => <div key={index}>{item}</div>)}
+      {sets.map((item, index) => <div key={index}>{item}</div>)}{/* this shows the list of sets */}
       <button style={inlineStyles.button} onClick={addRow}>Add Set</button>
     </>
   );
@@ -102,10 +102,10 @@ function FullWorkout({id}) {
   const [data, updateData] = useState([]);//variables (needed to update UI and variable simultaneously)
   const [exercise, setExercise] = useState("");
 
-  // Function to add a new component to the list
+  // Function to add a new exercise to the list
   function addExercise(exercise){
     if (exercise != ""){
-    const newExercise = <div><Exercise name={exercise} id={id}></Exercise><br></br></div>;//thinking error is here
+    const newExercise = <div><Exercise name={exercise} id={id}></Exercise><br></br></div>;
     setExercise("")
     updateData([...data, newExercise]);
     }
@@ -113,7 +113,7 @@ function FullWorkout({id}) {
       alert("Exercise Must Have A Name")
     }
   };
-  return (
+  return (//this renders the workout section of the page
     <div> 
       {data.map((item, index) => <div key={index}>{item}</div>)}
       <button style={inlineStyles.button} onClick={() => addExercise(exercise)}>Add Exercise</button><input style={inlineStyles.input} value={exercise} onChange={e => setExercise(e.target.value)}></input>
@@ -158,7 +158,8 @@ export default function Home() {
   );
 }//h1 - title
 //button - home button
-// fullworkout - component with a list of "exercise"
+// fullworkout - component with a list of "exercises"
 // within each "exercise" you can add a set with weight and reps
+// each set gets put into a list, and then that list is used to update the dataset
 
 // and finaly a button where you can submit the workout
