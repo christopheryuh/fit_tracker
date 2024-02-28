@@ -99,7 +99,7 @@ function Exercise({name, id}) {
 
 function FullWorkout({id}) {
   // State to hold the list of components
-  const [data, updateData] = useState([]);
+  const [data, updateData] = useState([]);//variables (needed to update UI and variable simultaneously)
   const [exercise, setExercise] = useState("");
 
   // Function to add a new component to the list
@@ -121,17 +121,17 @@ function FullWorkout({id}) {
   );
 }
 
-async function submit(rows,id){
+async function submit(rows,id){//upload the workouts
   let prs = 0
   for (let i = 0; i < rows.length; i++){
       const {data, error} = await supabase.from("prs").select("*").eq("id",id).eq("exercise",rows[i].name)
       console.log(data)
-      if (data.length > 0){
-        if (rows[i].weight > data[0].weight){
+      if (data.length > 0){//if there is existing data
+        if (rows[i].weight > data[0].weight){//if weight is higher this time, update
           const {error} = await supabase.from("prs").update({"weight":rows[i].weight,"reps":rows[i].reps}).eq("id",id).eq("exercise",rows[i].name)
         }
       }
-      else {
+      else {// if there is no data, add this workout
         const {error} = await supabase.from("prs").insert({"unique":id+rows[i].name,"id":id,"exercise":rows[i].name,"weight":rows[i].weight,"reps":rows[i].reps})
       }
   }
@@ -141,7 +141,7 @@ async function submit(rows,id){
 
 export default function Home() {
   const router = useRouter();
-  const id = router.query.id;
+  const id = router.query.id;//get user
 
   return (
     <div>
@@ -156,4 +156,9 @@ export default function Home() {
     </div>
     </div>
   );
-}
+}//h1 - title
+//button - home button
+// fullworkout - component with a list of "exercise"
+// within each "exercise" you can add a set with weight and reps
+
+// and finaly a button where you can submit the workout

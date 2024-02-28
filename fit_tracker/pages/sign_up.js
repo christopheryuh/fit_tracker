@@ -14,7 +14,7 @@ const font1 = Ubuntu({
   display: 'swap',
   weight: '500'
 })
-const inlineStyles = {
+const inlineStyles = {//styles
   input: {  
     padding: '0.1rem .5rem',
     margin: '0.5rem',
@@ -53,20 +53,20 @@ export default function Home() {
   const router = useRouter();
 
   let goal_calories = 1000//load from database
-  const [username, setUsername] = useState();
+  const [username, setUsername] = useState();//variables (needed to update UI and variable simultaneously)
   const [password, setPassword] = useState();
   const [weight, setWeight] = useState();
 
   async function handleSubmit() {
 
-    const { data, error } = await supabase.from("login").select("*").eq('username',username)
-    if (data.length == 0){ 
-        const msg = await supabase.from("login").insert({'username':username,'password':password})
-        const {data, error} = await supabase.from("ids").select("*")
-        const {data2, error2} = await supabase.from("ids").insert({'username':username,'id':(data.length+1)})
-        //const wcd = await supabase.from("wc").select("*")
+    const { data, error } = await supabase.from("login").select("*").eq('username',username)// if there isnt a username in the database
+    if (data.length == 0){
+        const msg = await supabase.from("login").insert({'username':username,'password':password})//create one in the username and password table
+        const {data, error} = await supabase.from("ids").select("*")//get how many accounts there are
+        const {data2, error2} = await supabase.from("ids").insert({'username':username,'id':(data.length+1)})// add a new id to the database 
         let time = new Date()
-        const wc_submit = await supabase.from("wc").insert({'id':(data.length+1),'weight':Math.floor(weight),'goal_calories':Math.floor(weight)*15,'calories':0,last_updated:time.getDay()})
+        const wc_submit = await supabase.from("wc").insert({'id':(data.length+1),'weight':Math.floor(weight),'goal_calories':Math.floor(weight)*15,'calories':0,last_updated:time.getDay()})//add the calorie data to the database
+        //15 * weight is a base maintenance calorie value that I researched
         alert("Account Created")
         router.push(
             { pathname: "/", query: {id:(data.length+1)} }
@@ -78,7 +78,7 @@ export default function Home() {
   };
 
 
-  return (
+  return (//basic sign up form
     <div>
     <h1 style={inlineStyles.h1} className={font1.className}>Sign Up</h1>
     <Link href="/">Home</Link>

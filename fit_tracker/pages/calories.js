@@ -21,7 +21,7 @@ const supabase = createClient(url, key)
 
 let data = null
 
-const inlineStyles = {
+const inlineStyles = {//css styles
     input: {  
       padding: '0.1rem .5rem',
       margin: '0.5rem',
@@ -50,8 +50,7 @@ const inlineStyles = {
   };
 
 function Calories({ calorieData }) {
-    //reset if it is loaded on a different day
-    return (
+    return (// render the calories
         <div>
             {calorieData && calorieData.length > 0 && (
                 <h2 style={inlineStyles.h2}>{calorieData[0].calories}/{calorieData[0].goal_calories}</h2>
@@ -62,15 +61,15 @@ function Calories({ calorieData }) {
 
 async function update(input_cals,cals,id){
     const { error } = await supabase.from('wc').update({ calories: Math.floor(input_cals)+cals})
-  .eq('id', id)
+  .eq('id', id)//add calories to the database
 }
 
 export default function Home(){
     let router = useRouter()
-    const [calorieData, setCalorieData] = useState(null);
+    const [calorieData, setCalorieData] = useState(null);//variables (needed to update UI and variable simultaneously)
     const [input_calories, setInputCalories] = useState(0);
     const id = router.query.id;
-    useEffect(() => {
+    useEffect(() => {//load calorie data
         async function load(){
             const {data, error} = await supabase.from("wc").select("*").eq("id",id)
             return data
@@ -80,7 +79,7 @@ export default function Home(){
         let data = await load()
         let time = new Date()
         try{
-        if (data[0].last_updated != time.getDay()){
+        if (data[0].last_updated != time.getDay()){// if it's a different day, reset the calories
             const { error } = await supabase.from('wc').update({ calories: 0, last_updated: time.getDay()}).eq('id', id)
             data = await load()
         }
@@ -93,7 +92,7 @@ export default function Home(){
     }
     
     )  
-    return (
+    return (//link and simple calorie counter, <Calories> holds the actual counter. There is also an input, and a submit button
     <div>
     <h1 className={font1.className}>Calorie Tracker</h1>
     <button style={inlineStyles.button} onClick={()=>router.push({ pathname: "/", query: {'id':id}})}>Go Home</button>

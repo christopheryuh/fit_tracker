@@ -12,8 +12,7 @@ const font1 = Ubuntu({
   weight: '500'
 })
 
-const inter = Inter({ subsets: ["latin"] });
-const inlineStyles = {
+const inlineStyles = {//css styling
   input: {  
     padding: '0.1rem .5rem',
     margin: '0.5rem',
@@ -43,7 +42,7 @@ const inlineStyles = {
 
 
 
-export default function Home() {
+export default function Home() {//A Bunch of links to the different pages
   const router = useRouter();
   const d = router.query;
 
